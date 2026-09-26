@@ -19,8 +19,12 @@ const POINTS = [
     title: 'Reorder rules',
     body: 'Set a minimum and maximum per product. Drop below the minimum and it is flagged as low stock.',
   },
+  {
+    icon: History,
+    title: 'Append-only ledger',
+    body: 'Every stock movement is recorded permanently — nothing can be edited or deleted, so the history always matches reality.',
+  },
 ];
-
 const LOCATIONS = [
   { location: 'WH/Stock/Rack A', onHand: 50, reserved: 20 },
   { location: 'WH/Stock/Rack B', onHand: 18, reserved: 0 },
