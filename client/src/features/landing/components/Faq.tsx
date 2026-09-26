@@ -86,7 +86,6 @@ type FaqItemProps = {
   open: boolean;
   onToggle: () => void;
 };
-
 function FaqItem({ q, a, open, onToggle }: FaqItemProps) {
   const id = useId();
   const buttonId = `${id}-button`;
