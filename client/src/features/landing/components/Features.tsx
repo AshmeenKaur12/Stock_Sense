@@ -38,6 +38,10 @@ function LiveVisual() {
           </span>
           Updated just now
         </div>
+        <div className="mt-2 inline-flex items-center gap-1.5 text-[11.5px] text-muted-foreground">
+          <Warehouse className="size-3" />
+          Across 2 warehouses, 6 locations
+        </div>
       </div>
       <Sparkline data={[30, 34, 31, 38, 36, 42, 40, 47, 45, 52, 50, 56]} width={160} height={48} className="hidden max-w-full xs:block" />
     </div>
