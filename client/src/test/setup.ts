@@ -2,28 +2,33 @@ import '@testing-library/jest-dom/vitest';
 import { cleanup } from '@testing-library/react';
 import { afterEach } from 'vitest';
 
-afterEach(() => cleanup());
+afterEach(cleanup);
 
-// jsdom lacks browser APIs used by Radix / Framer Motion.
+const createMatchMedia = (query: string): MediaQueryList =>
+  ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: () => {},
+    removeListener: () => {},
+    addEventListener: () => {},
+    removeEventListener: () => {},
+    dispatchEvent: () => false,
+  }) as MediaQueryList;
+
 if (!window.matchMedia) {
-  window.matchMedia = (query: string) =>
-    ({
-      matches: false,
-      media: query,
-      onchange: null,
-      addListener: () => {},
-      removeListener: () => {},
-      addEventListener: () => {},
-      removeEventListener: () => {},
-      dispatchEvent: () => false,
-    }) as MediaQueryList;
+  window.matchMedia = createMatchMedia;
 }
 
 class ResizeObserverStub {
   observe() {}
+
   unobserve() {}
+
   disconnect() {}
 }
 
-window.ResizeObserver ??=
+const resizeObserver =
   ResizeObserverStub as unknown as typeof ResizeObserver;
+
+window.ResizeObserver ??= resizeObserver;
