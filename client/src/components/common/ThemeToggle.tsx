@@ -7,6 +7,11 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 export function ThemeToggle() {
   const { resolvedTheme, setTheme } = useTheme();
   const isDark = resolvedTheme !== 'light';
+  const nextTheme = isDark ? 'light' : 'dark';
+
+  const handleThemeToggle = () => {
+    setTheme(nextTheme);
+  };
 
   return (
     <Tooltip>
@@ -15,7 +20,7 @@ export function ThemeToggle() {
           variant="ghost"
           size="icon-sm"
           aria-label={isDark ? 'Switch to light theme' : 'Switch to dark theme'}
-          onClick={() => setTheme(isDark ? 'light' : 'dark')}
+          onClick={handleThemeToggle}
           className="relative overflow-hidden text-muted-foreground hover:text-foreground"
         >
           <AnimatePresence mode="wait" initial={false}>
