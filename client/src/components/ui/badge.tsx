@@ -12,17 +12,61 @@ export const badgeVariants = cva(
         outline: 'text-foreground',
         success: 'border-success/20 bg-success/10 text-success',
         warning: 'border-warning/20 bg-warning/10 text-warning',
-        destructive: 'border-destructive/20 bg-destructive/10 text-destructive',
+        destructive:
+          'border-destructive/20 bg-destructive/10 text-destructive',
         info: 'border-info/20 bg-info/10 text-info',
         muted: 'border-border bg-muted text-muted-foreground',
       },
     },
-    defaultVariants: { variant: 'default' },
+    defaultVariants: {
+      variant: 'default',
+    },
   },
 );
 
-export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement>, VariantProps<typeof badgeVariants> {}
+const statusDotVariants = cva('size-1.5 shrink-0 rounded-full', {
+  variants: {
+    variant: {
+      default: 'bg-primary',
+      secondary: 'bg-secondary-foreground',
+      outline: 'bg-foreground',
+      success: 'bg-success',
+      warning: 'bg-warning',
+      destructive: 'bg-destructive',
+      info: 'bg-info',
+      muted: 'bg-muted-foreground',
+    },
+  },
+  defaultVariants: {
+    variant: 'default',
+  },
+});
 
-export function Badge({ className, variant, ...props }: BadgeProps) {
-  return <span className={cn(badgeVariants({ variant }), className)} {...props} />;
+export interface BadgeProps
+  extends React.HTMLAttributes<HTMLSpanElement>,
+    VariantProps<typeof badgeVariants> {
+  showDot?: boolean;
+}
+
+export function Badge({
+  className,
+  variant,
+  showDot = false,
+  children,
+  ...props
+}: BadgeProps) {
+  return (
+    <span
+      className={cn(badgeVariants({ variant }), className)}
+      {...props}
+    >
+      {showDot && (
+        <span
+          aria-hidden="true"
+          className={statusDotVariants({ variant })}
+        />
+      )}
+      {children}
+    </span>
+  );
 }
