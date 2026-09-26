@@ -1,5 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 import { getPaged, postData } from '@/lib/api';
+import { getErrorMessage } from '@/lib/axios';
 import { queryKeys } from '@/lib/queryKeys';
 import type { AppNotification } from '@/lib/types';
 import { useAuthStore } from '@/store/auth';
@@ -29,6 +31,9 @@ export function useMarkRead() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: queryKeys.notifications.all });
     },
+    onError: (err) => {
+      toast.error('Could not mark notification as read', { description: getErrorMessage(err) });
+    },
   });
 }
 
@@ -39,6 +44,9 @@ export function useMarkAllRead() {
     mutationFn: () => postData(`${NOTIFICATIONS_ENDPOINT}/read-all`),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: queryKeys.notifications.all });
+    },
+    onError: (err) => {
+      toast.error('Could not mark all as read', { description: getErrorMessage(err) });
     },
   });
 }
