@@ -4,7 +4,7 @@ import { afterEach } from 'vitest';
 
 afterEach(() => cleanup());
 
-// jsdom lacks these browser APIs used by Radix / Framer Motion.
+// jsdom lacks browser APIs used by Radix / Framer Motion.
 if (!window.matchMedia) {
   window.matchMedia = (query: string) =>
     ({
@@ -24,4 +24,6 @@ class ResizeObserverStub {
   unobserve() {}
   disconnect() {}
 }
-window.ResizeObserver ??= ResizeObserverStub as unknown as typeof ResizeObserver;
+
+window.ResizeObserver ??=
+  ResizeObserverStub as unknown as typeof ResizeObserver;
