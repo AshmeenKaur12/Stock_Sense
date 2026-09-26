@@ -1,0 +1,101 @@
+import { format } from 'date-fns';
+import { motion } from 'framer-motion';
+import { Warehouse as WarehouseIcon } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectSeparator, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Skeleton } from '@/components/ui/skeleton';
+import { greeting } from '@/lib/format';
+import type { DashboardSummary, Warehouse } from '@/lib/types';
+import { fadeUp } from './primitives';
+
+const ALL = '__all__';
+
+interface DashboardHeroProps {
+  firstName?: string;
+  summary?: DashboardSummary;
+  summaryLoading: boolean;
+  warehouses: Warehouse[];
+  warehousesLoading: boolean;
+  warehouse: string;
+  onWarehouseChange: (id: string) => void;
+}
+
+function ContextLine({ summary }: { summary: DashboardSummary }) {
+  const attention = summary.kpis.lowStock + summary.kpis.outOfStock;
+  const late = summary.receipt.late + summary.delivery.late;
+  const parts = [
+    `${summary.receipt.toReceive} receipt${summary.receipt.toReceive === 1 ? '' : 's'} ready`,
+    `${summary.delivery.toDeliver} deliver${summary.delivery.toDeliver === 1 ? 'y' : 'ies'} ready`,
+    late > 0 ? `${late} running late` : 'nothing late',
+    attention > 0 ? `${attention} product${attention === 1 ? '' : 's'} need restocking` : 'stock levels healthy',
+  ];
+  return <>{parts.join(' · ')}</>;
+}
+
+export function DashboardHero({ firstName, summary, summaryLoading, warehouses, warehousesLoading, warehouse, onWarehouseChange }: DashboardHeroProps) {
+  const active = warehouses.find((w) => w._id === warehouse);
+
+  return (
+    <motion.div variants={fadeUp} className="relative -mx-4 -mt-6 overflow-hidden px-4 pb-1 pt-6 sm:-mx-6 sm:px-6 lg:-mx-8 lg:-mt-8 lg:px-8 lg:pt-10">
+      <div className="bg-grid mask-fade-b pointer-events-none absolute inset-0 -z-10" aria-hidden />
+      <div
+        className="pointer-events-none absolute -top-32 left-1/2 -z-10 h-72 w-[min(720px,100%)] -translate-x-1/2 rounded-full bg-brand-gradient opacity-[0.13] blur-3xl"
+        aria-hidden
+      />
+
+      <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+        <div className="min-w-0 space-y-2">
+          <div className="flex flex-wrap items-center gap-2.5">
+            <span className="caption-label">Dashboard</span>
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-success/25 bg-success/10 px-2 py-0.5 text-[11px] font-medium text-success">
+              <span className="relative flex size-1.5" aria-hidden>
+                <span className="absolute inline-flex size-full animate-ping rounded-full bg-success opacity-60 motion-reduce:hidden" />
+                <span className="relative inline-flex size-1.5 rounded-full bg-success" />
+              </span>
+              Live
+            </span>
+            <span className="text-caption text-muted-foreground">{format(new Date(), 'EEEE, d MMMM')}</span>
+          </div>
+          <h1 className="text-h1 sm:text-[30px] sm:leading-9">
+            {greeting()}
+            {firstName ? `, ${firstName}` : ''}
+          </h1>
+          <div className="max-w-2xl text-sm text-muted-foreground">
+            {summaryLoading && !summary ? (
+              <Skeleton className="inline-block h-4 w-72 max-w-full align-middle" />
+            ) : summary ? (
+              <>
+                {active ? <span className="font-medium text-foreground/80">{active.name}: </span> : 'Across all warehouses: '}
+                <ContextLine summary={summary} />.
+              </>
+            ) : (
+              'A live pulse of stock levels and operations across every warehouse.'
+            )}
+          </div>
+        </div>
+
+        <div className="w-full shrink-0 md:w-64">
+          <label htmlFor="dashboard-warehouse" className="caption-label mb-1.5 block">
+            Warehouse
+          </label>
+          <Select value={warehouse || ALL} onValueChange={(v) => onWarehouseChange(v === ALL ? '' : v)} disabled={warehousesLoading}>
+            <SelectTrigger id="dashboard-warehouse" className="h-10 bg-card/80 backdrop-blur dark:bg-card/80">
+              <span className="flex min-w-0 items-center gap-2">
+                <WarehouseIcon className="size-4 shrink-0 text-primary" aria-hidden />
+                <SelectValue placeholder="All warehouses" />
+              </span>
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value={ALL}>All warehouses</SelectItem>
+              {warehouses.length > 0 && <SelectSeparator />}
+              {warehouses.map((w) => (
+                <SelectItem key={w._id} value={w._id}>
+                  {w.name} <span className="ml-1 font-mono text-[11px] text-muted-foreground">{w.shortCode}</span>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+    </motion.div>
+  );
+}

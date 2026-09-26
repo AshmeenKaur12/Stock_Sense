@@ -1,0 +1,29 @@
+{
+  "name": "stocksense",
+  "version": "1.0.0",
+  "private": true,
+  "description": "StockSense — modular, real-time Inventory Management System (MERN)",
+  "workspaces": [
+    "server",
+    "client"
+  ],
+  "scripts": {
+    "dev": "concurrently -k -n server,client -c magenta,cyan \"npm run dev -w server\" \"npm run dev -w client\"",
+    "dev:local": "concurrently -k -n db,server,client -c yellow,magenta,cyan \"npm run db -w server\" \"npm run dev -w server\" \"npm run dev -w client\"",
+    "db": "npm run db -w server",
+    "seed": "npm run seed -w server",
+    "build": "npm run build -w server && npm run build -w client",
+    "test": "npm test -w server && npm test -w client",
+    "lint": "npm run lint -w server && npm run lint -w client",
+    "typecheck": "npm run typecheck -w server && npm run typecheck -w client",
+    "format": "prettier --write \"{client,server}/**/*.{ts,tsx,css,json,md}\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.1",
+    "prettier": "^3.3.3",
+    "prettier-plugin-tailwindcss": "^0.6.8"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

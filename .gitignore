@@ -1,0 +1,11 @@
+node_modules/
+dist/
+coverage/
+.env
+.env.local
+*.log
+.mongo-data/
+server/uploads/*
+!server/uploads/.gitkeep
+.DS_Store
+.vscode/
