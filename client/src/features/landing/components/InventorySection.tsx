@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Gauge, MapPin, PackageCheck } from 'lucide-react';
+import { Gauge, History, MapPin, PackageCheck } from 'lucide-react';
 import { StockStatusBadge } from '@/components/common/StatusBadge';
 import { fadeUp, Reveal, Section, SectionHeader, stagger } from '@/features/landing/components/primitives';
 
