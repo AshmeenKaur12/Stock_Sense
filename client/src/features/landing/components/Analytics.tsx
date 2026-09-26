@@ -8,32 +8,35 @@ import {
   SectionHeader,
 } from '@/features/landing/components/primitives';
 
-const IN = [42, 55, 48, 62, 58, 70, 66, 74, 69, 80, 76, 88, 84, 92];
-const OUT = [30, 38, 44, 40, 52, 49, 58, 55, 63, 60, 67, 64, 72, 70];
+const STOCK_IN = [42, 55, 48, 62, 58, 70, 66, 74, 69, 80, 76, 88, 84, 92];
+const STOCK_OUT = [30, 38, 44, 40, 52, 49, 58, 55, 63, 60, 67, 64, 72, 70];
 
-const W = 560;
-const H = 180;
-const MAX = 100;
+const CHART_WIDTH = 560;
+const CHART_HEIGHT = 180;
+const MAX_VALUE = 100;
 
-function toPath(data: number[]) {
-  const step = W / (data.length - 1);
+function buildChartPath(data: number[]) {
+  const step = CHART_WIDTH / (data.length - 1);
 
-  const pts = data.map(
-    (value, index) =>
-      [index * step, H - (value / MAX) * (H - 12)] as const,
-  );
+  const points = data.map((value, index) => [
+    index * step,
+    CHART_HEIGHT - (value / MAX_VALUE) * (CHART_HEIGHT - 12),
+  ] as const);
 
-  const line = pts
-    .map(([x, y], index) => `${index ? 'L' : 'M'}${x.toFixed(1)},${y.toFixed(1)}`)
+  const line = points
+    .map(
+      ([x, y], index) =>
+        `${index === 0 ? 'M' : 'L'}${x.toFixed(1)},${y.toFixed(1)}`,
+    )
     .join(' ');
 
   return {
     line,
-    area: `${line} L${W},${H} L0,${H} Z`,
+    area: `${line} L${CHART_WIDTH},${CHART_HEIGHT} L0,${CHART_HEIGHT} Z`,
   };
 }
 
-const CATEGORIES = [
+const STOCK_CATEGORIES = [
   {
     name: 'Furniture',
     share: 42,
@@ -61,8 +64,8 @@ const CATEGORIES = [
 ];
 
 function InOutChart() {
-  const inP = toPath(IN);
-  const outP = toPath(OUT);
+  const incomingPath = buildChartPath(STOCK_IN);
+  const outgoingPath = buildChartPath(STOCK_OUT);
 
   return (
     <figure className="min-w-0 rounded-2xl border bg-card p-5 shadow-card sm:p-6">
@@ -81,7 +84,10 @@ function InOutChart() {
           </span>
 
           <span className="inline-flex items-center gap-1.5">
-            <span className="size-2 rounded-full bg-destructive" aria-hidden />
+            <span
+              className="size-2 rounded-full bg-destructive"
+              aria-hidden
+            />
             Out
           </span>
         </div>
@@ -89,19 +95,19 @@ function InOutChart() {
 
       <div className="relative mt-6">
         <svg
-          viewBox={`0 0 ${W} ${H}`}
+          viewBox={`0 0 ${CHART_WIDTH} ${CHART_HEIGHT}`}
           preserveAspectRatio="none"
           className="h-44 w-full overflow-visible sm:h-52"
           role="img"
           aria-label="Area chart: incoming units trend slightly above outgoing units over 14 days."
         >
-          {[0.25, 0.5, 0.75].map((f) => (
+          {[0.25, 0.5, 0.75].map((position) => (
             <line
-              key={f}
+              key={position}
               x1={0}
-              x2={W}
-              y1={H * f}
-              y2={H * f}
+              x2={CHART_WIDTH}
+              y1={CHART_HEIGHT * position}
+              y2={CHART_HEIGHT * position}
               className="stroke-border"
               strokeDasharray="3 4"
               vectorEffect="non-scaling-stroke"
@@ -110,15 +116,15 @@ function InOutChart() {
 
           <line
             x1={0}
-            x2={W}
-            y1={H}
-            y2={H}
+            x2={CHART_WIDTH}
+            y1={CHART_HEIGHT}
+            y2={CHART_HEIGHT}
             className="stroke-border"
             vectorEffect="non-scaling-stroke"
           />
 
           <motion.path
-            d={inP.area}
+            d={incomingPath.area}
             className="fill-success/10"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
@@ -127,7 +133,7 @@ function InOutChart() {
           />
 
           <motion.path
-            d={outP.area}
+            d={outgoingPath.area}
             className="fill-destructive/10"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
@@ -136,7 +142,7 @@ function InOutChart() {
           />
 
           <motion.path
-            d={inP.line}
+            d={incomingPath.line}
             fill="none"
             className="stroke-success"
             strokeWidth={2}
@@ -149,7 +155,7 @@ function InOutChart() {
           />
 
           <motion.path
-            d={outP.line}
+            d={outgoingPath.line}
             fill="none"
             className="stroke-destructive"
             strokeWidth={2}
@@ -180,7 +186,7 @@ function InOutChart() {
 }
 
 function CategoryDonut() {
-  const R = 40;
+  const radius = 40;
   let offset = 0;
 
   return (
@@ -202,14 +208,14 @@ function CategoryDonut() {
             <circle
               cx={50}
               cy={50}
-              r={R}
+              r={radius}
               fill="none"
               className="stroke-muted"
               strokeWidth={12}
             />
 
-            {CATEGORIES.map((category) => {
-              const start = offset;
+            {STOCK_CATEGORIES.map((category) => {
+              const startOffset = offset;
               offset += category.share;
 
               return (
@@ -217,12 +223,12 @@ function CategoryDonut() {
                   key={category.name}
                   cx={50}
                   cy={50}
-                  r={R}
+                  r={radius}
                   fill="none"
                   pathLength={100}
                   strokeWidth={12}
                   className={category.stroke}
-                  strokeDashoffset={-start}
+                  strokeDashoffset={-startOffset}
                   initial={{ strokeDasharray: '0 100' }}
                   whileInView={{
                     strokeDasharray: `${Math.max(
@@ -255,7 +261,7 @@ function CategoryDonut() {
         </div>
 
         <ul className="w-full space-y-2.5 text-sm">
-          {CATEGORIES.map((category) => (
+          {STOCK_CATEGORIES.map((category) => (
             <li
               key={category.name}
               className="flex items-center gap-2.5"
