@@ -29,6 +29,10 @@ const FAQS = [
     q: 'How do I reset a forgotten password?',
     a: 'Choose “Forgot password” on the sign-in page. StockSense emails you a one-time code (OTP); enter it to verify your identity and set a new password.',
   },
+  {
+    q: 'Does StockSense send low-stock alerts?',
+    a: 'Yes. Each product can have a minimum quantity set. When stock drops to or below that number, StockSense automatically creates a notification and shows it on the dashboard in real time — no manual checking needed.',
+  },
 ];
 
 function FaqItem({ q, a, open, onToggle }: { q: string; a: string; open: boolean; onToggle: () => void }) {
