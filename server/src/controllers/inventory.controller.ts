@@ -8,7 +8,7 @@ import { sendSuccess } from '../utils/response';
 
 type Paged<T> = T & { page: number; limit: number };
 
-// ── Stock ──────────────────────────────────────────────────────────────────
+
 
 export async function listStock(req: Request, res: Response) {
   const q = req.query as unknown as Paged<stock.StockFilters & { sort?: string }>;
@@ -26,7 +26,7 @@ export async function adjust(req: Request, res: Response) {
   sendSuccess(res, result, { message: `Stock updated (${result.difference > 0 ? '+' : ''}${result.difference})` });
 }
 
-// ── Moves ──────────────────────────────────────────────────────────────────
+
 
 export async function listMoves(req: Request, res: Response) {
   const q = req.query as unknown as Paged<moves.MoveFilters>;
@@ -46,7 +46,7 @@ export async function exportCsv(req: Request, res: Response) {
   res.send(`${String.fromCharCode(0xfeff)}${csv}`);
 }
 
-// ── Dashboard ──────────────────────────────────────────────────────────────
+
 
 export async function summary(req: Request, res: Response) {
   sendSuccess(res, await dashboard.summary(req.query as dashboard.DashboardFilters));
