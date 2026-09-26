@@ -1,0 +1,27 @@
+# Render "Blueprint" — lets you deploy the backend with almost no manual typing.
+#
+# Usage: Render dashboard → New + → Blueprint → connect this repo → Render reads
+# this file and pre-fills everything below. You'll only be asked for the two
+# values marked `sync: false` (MONGO_URI and CLIENT_URL) — everything else,
+# including both JWT secrets, is generated or filled in automatically.
+services:
+  - type: web
+    name: stocksense-api
+    runtime: node
+    plan: free
+    rootDir: server
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: COOKIE_SECURE
+        value: 'true'
+      - key: JWT_ACCESS_SECRET
+        generateValue: true
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
+      - key: MONGO_URI
+        sync: false
+      - key: CLIENT_URL
+        sync: false
