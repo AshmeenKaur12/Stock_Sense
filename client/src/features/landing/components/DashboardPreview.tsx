@@ -12,6 +12,7 @@ const NAV = ['Dashboard', 'Operations', 'Stock', 'Move History', 'Settings'] as 
 const KPIS: { label: string; value: string; delta: string; icon: LucideIcon; tone: string; data: number[] }[] = [
   { label: 'Products in stock', value: '1,284', delta: '+4.2%', icon: Boxes, tone: 'text-primary', data: [8, 9, 8, 11, 10, 12, 13, 12, 15] },
   { label: 'Low / out of stock', value: '7', delta: '−2', icon: TriangleAlert, tone: 'text-warning', data: [11, 10, 12, 9, 9, 8, 8, 7, 7] },
+  { label: 'Pending deliveries', value: '6', delta: '2 waiting', icon: ArrowUpFromLine, tone: 'text-destructive', data: [4, 5, 5, 6, 5, 7, 6, 6, 6] },
   { label: 'Pending receipts', value: '4', delta: '1 late', icon: ArrowDownToLine, tone: 'text-success', data: [3, 5, 4, 6, 5, 4, 6, 5, 4] },
   { label: 'Transfers scheduled', value: '3', delta: 'today', icon: ArrowLeftRight, tone: 'text-info', data: [1, 2, 2, 3, 2, 4, 3, 3, 3] },
 ];
